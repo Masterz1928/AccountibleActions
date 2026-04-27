@@ -52,6 +52,14 @@ async def test_ai():
     )
     return {"ai_response": response.text}
 
+@app.put("/tasks/{task_id}/toggle")
+async def toggle_tasks(task_id: int):
+    for task in Ram:
+        if task.id == task_id:
+            task.completed = not task.completed 
+            return {MESSAGE: "Task toggled!", "task": task}
+    return {MESSAGE: ""}
+
 # --- THE AI DECOMPOSER ROUTE ---
 @app.post("/decompose/")
 async def decompose_task(vague_task: str):
@@ -90,7 +98,7 @@ async def decompose_task(vague_task: str):
         
         sub_task = Task(
             id=len(Ram) + 1,
-            title=f"↳ {data['title']}",  # Added a little arrow so it looks like a sub-task
+            title=f"-> {data['title']}",  # Added a little arrow so it looks like a sub-task
             description=data['description'],
             completed=False,
             est_time=data['est_time']
